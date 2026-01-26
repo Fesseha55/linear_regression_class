@@ -17,7 +17,6 @@ format:
     margin: 0.1
     footer: "POL 682 | Introduction to Linear Regression"
     slide-number: true
-    logo: "ua-logo.png"
     code-fold: true
     embed-resources: false
 resources:
@@ -97,7 +96,7 @@ my_analysis/
 -   Create an account at [github.com](https://github.com)
 -   Log into your account
 -   Search for this repository, fork it to your account, and clone it to your computer
--   And, create a sample repository to practice with.
+-   And, createa sample repository to practice with.
 
 ## `RStudio`
 
@@ -108,34 +107,104 @@ my_analysis/
 
 ------------------------------------------------------------------------
 
-### Step 1: Fork the Repository
+## Understanding Git Workflows
 
-<img src="github1.png" width="80%">
+### Three Key Concepts
 
-------------------------------------------------------------------------
-
-### Step 2: Clone to Your Computer
-
-<img src="github2.png" width="80%">
-
-------------------------------------------------------------------------
-
-### Step 3: Open in RStudio
-
-<img src="github3.png" width="80%">
+::: incremental
+- **Forking**: Creating your own copy of someone else's repository
+- **Committing**: Saving changes to your local repository
+- **Push/Pull**: Synchronizing between local and remote repositories
+:::
 
 ------------------------------------------------------------------------
 
-### Step 4: Work with Git in RStudio
+## Forking vs. Cloning
 
-<img src="github4.png" width="80%">
+### Fork
+- Creates a **copy** of a repository under **your GitHub account**
+-  A forked repository is useful  for collaboration
+- Use when you want to contribute to someone else's project
+- Common in open-source collaboration
+
+### Clone
+- Downloads a repository to your **local computer**
+- You can clone your own repos or others' repos
+- Changes are made locally until you push them
+- Clones are "read-only" unless it is a repo in your account.
+- Fork + Clone = Collaboration
+- A Fork + Clone allows you to generate a "pull request"
 
 ------------------------------------------------------------------------
 
-### Step 5: Push Your Changes
+## The Commit Workflow
 
-<img src="github5.png" width="80%">
+### What is a Commit?
+- A **snapshot** of your changes at a point in time
+- Each commit has a unique ID and message
+- Creates a history of your work
 
+### Basic Terminal Commands
+
+```bash
+# Check status of your files
+git status
+
+# Add files to staging area
+git add data_683.R
+git add .  # adds all changed files
+
+# Commit changes with a message
+git commit -m "My new 683 repo"
+```
+
+------------------------------------------------------------------------
+
+## Pull, Push, and Staying in Sync
+
+### The Basic Workflow
+
+```bash
+# 1. Pull latest changes from remote
+git pull origin main
+
+# 2. Make your changes to files
+# (edit your code, data, etc.)
+
+# 3. Stage and commit changes
+git add .
+git commit -m "Update analysis"
+
+# 4. Push changes to remote
+git push origin main
+```
+
+**Some Practical Advice:**: Always `pull` before you start working to avoid conflicts!
+
+------------------------------------------------------------------------
+
+## When to Use What?
+
+| Action | When to Use | Command |
+|--------|-------------|---------|
+| **Fork** | Contributing to others' projects | Done on GitHub website |
+| **Clone** | Getting a repo onto your computer | `git clone <url>` |
+| **Pull** | Getting latest changes from remote | `git pull origin main` |
+| **Commit** | Saving changes locally | `git commit -m "message"` |
+| **Push** | Sending local changes to remote | `git push origin main` |
+
+------------------------------------------------------------------------
+## Class Activity
+
+**Fork the Class Repository**
+
+**Clone the Repo to your Computer**
+
+**Create a <lastname>.qmd file in the `tmp` folder**
+
+**Add content and save**
+
+**Add, Commit, and Push**
 ------------------------------------------------------------------------
 
 ## The Linear Regression Model
@@ -148,7 +217,20 @@ Linear regression is one of the most widely used statistical methods for several
 - **Practical utility** - hypothesis testing and predictive modeling
 :::
 
+##  The Logic Underlying the Regression Model
 
+### A Brief (Troubled) History
+
+::: incremental
+- **Francis Galton (1886)** used regression and coined the term to denote a "regression to the mean" often in the heritability of  physical charateristics.
+- For instance, he compared characteristics using inter-generational data (e.g., average height in father-son pairs; Pearl & Mackenzie 2018)
+- Observed **"regression to the mean"**: If a father is 5'2'' (unusually short), his son tends to be short but closer to the **population average** (taller than the father, closer to the mean; problematically referred to as "regression to mediocrity" by Galton)
+- Galton was a founder of the **eugenics movement**
+- The broader method -- a statistical model that can be used to quantify the relationship between two variables -- is value neutral
+- But a word of caution: Statistical methods are routinely abused and misinterpreted, sometimes in tragic and unexpected ways; all the more reason to thoroughly understand how they work
+:::
+
+------------------------------------------------------------------------
 
 ## A Linear Model
 
