@@ -1,5 +1,7 @@
 # Linear Regression Class Repository
 
+[![Launch RStudio](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/crweber9874/linear_regression_class/main?urlpath=rstudio)
+
 ## Overview
 
 This repository contains materials for a course on linear regression analysis, emphasizing **reproducibility** and modern R programming practices. The structure and content follow the pedagogical approach of Fox's *Applied Regression Analysis and Generalized Linear Models* while utilizing the tidyverse framework for data manipulation and visualization.
@@ -86,8 +88,8 @@ The `lectures/` folder contains Quarto (`.qmd`) files for each lecture topic. Se
 |---------|------|-------|
 | Introduction to Linear Regression | [Introduction_to_Linear_Regression.qmd](lectures/Introduction_to_Linear_Regression.qmd) | [RPubs](https://rpubs.com/crweber9874/linereg1) |
 | Derivation of OLS Estimator | [ols_estimator.qmd](lectures/ols_estimator.qmd) | [RPubs](https://rpubs.com/crweber9874/1390443) |
-| OLS Derivation (Detailed Notes) | [OLS_Derivation.qmd](lectures/OLS_Derivation.qmd) | |
-| Gauss-Markov Assumptions | [gauss_markov_slides.qmd](lectures/gauss_markov_slides.qmd) | |
+| OLS Derivation (Detailed Notes) | [OLS_Derivation.qmd](lectures/OLS_Derivation.qmd) | [RPubs](https://rpubs.com/crweber9874/1390453) |
+| Gauss-Markov Assumptions | [gauss_markov_slides.qmd](lectures/gauss_markov_slides.qmd) | [RPubs](https://rpubs.com/crweber9874/gm_assumptions) |
 
 **Course Schedule:**
 
