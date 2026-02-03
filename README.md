@@ -6,6 +6,10 @@
 
 This repository contains materials for a course on linear regression analysis, emphasizing **reproducibility** and modern R programming practices. The structure and content follow the pedagogical approach of Fox's *Applied Regression Analysis and Generalized Linear Models* while utilizing the tidyverse framework for data manipulation and visualization.
 
+## Markdown
+
+Nearly all documentation is in Quarto Markdown (.qmd). Repo information is written in (.md). Generally, I avoid RMarkdown, but do use it occasionally.
+
 ## Course Philosophy: Reproducibility
 
 Reproducibility is a cornerstone of modern data science and statistical analysis. This course emphasizes:
@@ -13,8 +17,8 @@ Reproducibility is a cornerstone of modern data science and statistical analysis
 - **Transparent workflows**: All analyses should be documented and replicable
 - **Version control**: Using Git/GitHub for tracking changes
 - **Dependency management**: Clear documentation of R packages and versions
-- **Data provenance**: Clear documentation of data sources and preprocessing steps
-- **Literate programming**: Combining code, output, and narrative using R Markdown
+- **Data**: Clear documentation of data sources and preprocessing steps
+- **Clear Structure**: Combining code, output, and narrative using Quarto (.qmd) 
 
 ## Repository Structure
 
