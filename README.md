@@ -1,8 +1,14 @@
 # Linear Regression Class Repository
 
+[![Launch RStudio](https://img.shields.io/badge/Launch-RStudio-blue?logo=rstudio)](https://mybinder.org/v2/gh/crweber9874/linear_regression_class/main?urlpath=rstudio)
+
 ## Overview
 
 This repository contains materials for a course on linear regression analysis, emphasizing **reproducibility** and modern R programming practices. The structure and content follow the pedagogical approach of Fox's *Applied Regression Analysis and Generalized Linear Models* while utilizing the tidyverse framework for data manipulation and visualization.
+
+## Markdown
+
+Nearly all documentation is in Quarto Markdown (.qmd). Repo information is written in (.md). Generally, I avoid RMarkdown, but do use it occasionally.
 
 ## Course Philosophy: Reproducibility
 
@@ -11,8 +17,8 @@ Reproducibility is a cornerstone of modern data science and statistical analysis
 - **Transparent workflows**: All analyses should be documented and replicable
 - **Version control**: Using Git/GitHub for tracking changes
 - **Dependency management**: Clear documentation of R packages and versions
-- **Data provenance**: Clear documentation of data sources and preprocessing steps
-- **Literate programming**: Combining code, output, and narrative using R Markdown
+- **Data**: Clear documentation of data sources and preprocessing steps
+- **Clear Structure**: Combining code, output, and narrative using Quarto (.qmd) 
 
 ## Repository Structure
 
@@ -78,10 +84,21 @@ All datasets include documentation describing variables, sources, and any prepro
 
 ### Lectures
 
-The `lectures/` folder contains:
-- R Markdown files for each lecture topic
-- Rendered HTML/PDF slides
-- Supporting R scripts
+The `lectures/` folder contains Quarto (`.qmd`) files for each lecture topic. See the [lecture index](lectures/lecture_slides.qmd) for a complete list with links.
+
+**Current lectures:**
+
+| Lecture | File | RPubs |
+|---------|------|-------|
+| Introduction to Linear Regression | [Introduction_to_Linear_Regression.qmd](lectures/Introduction_to_Linear_Regression.qmd) | [RPubs](https://rpubs.com/crweber9874/linereg1) |
+| Derivation of OLS Estimator | [ols_estimator.qmd](lectures/ols_estimator.qmd) | [RPubs](https://rpubs.com/crweber9874/1390443) |
+| OLS Derivation (Detailed Notes) | [OLS_Derivation.qmd](lectures/OLS_Derivation.qmd) | [RPubs](https://rpubs.com/crweber9874/1390453) |
+| Gauss-Markov Assumptions | [gauss_markov_slides.qmd](lectures/gauss_markov_slides.qmd) | [RPubs](https://rpubs.com/crweber9874/gm_assumptions) |
+
+**Course Schedule:**
+
+- **Week 1**: Introduction to Linear Regression
+- **Weeks 2-3**: Estimation and Properties (OLS derivation, Gauss-Markov assumptions, BLUE)
 
 Topics follow the progression in Fox's Applied Regression Analysis:
 1. Simple linear regression
