@@ -8,15 +8,39 @@ format:
     chalkboard: true
     smaller: false
     scrollable: true
-    math: mathjax
+    math: katex
     transition: fade
     width: 1200
     height: 750
 ---
 
-# Part I: Estimation in R {background-color="white" style="color: black;"}
 
-Workflow
+
+## Guidance for Midterm Exam
+
+- **All** material (lectures, readings, examples, etc.) are *fair game* for the exam.
+- I do not expect you to entirely reproduce proofs of theorems, but I expect you to recognize and understand the key ideas and be able to apply them.
+- You may be asked to elaborate on particular points and provide additional context or examples.
+- This may entail working through particular characteristics of the estimator -- e.g., **demonstrate the unbiasedness of the OLS estimator.**
+
+
+## Guidance for Midterm Exam
+- Key terms and concepts: Normal equations, OLS estimator, Gauss-Markov theorem, OLS estimator, OLS residuals, etc.
+- Conceptual applications are common (e.g., what are the assumptions of the Gauss-Markov theorem? What does it tell us about the OLS estimator? How does it help us understand the OLS estimator?)
+- Interpretation is also important (e.g., what does the OLS estimator tell us about the relationship between $X$ and $Y$?)
+
+
+## Example
+
+*Gauss-Markov Assumptions.* If the PRF is written as: $Y_i=\alpha+\beta X_i+\epsilon_i$, and the SRF is expressed as: $Y_i=a+b X_i+e_i$.
+
+(a) What assumptions are required in order for the OLS estimator to be the best linear unbiased estimator with minimum variance? Describe each assumption in no more than 1-2 sentences.
+
+(b) The Gauss-Markov theorem holds that if these assumptions are met, the OLS estimator of $b$ is a linear function of $y_i$ (i.e., $b=\sum k_i Y_i$). Please demonstrate this.
+
+(c) The Gauss-Markov theorem holds that if these assumptions are met, the OLS estimator is an unbiased estimator of $\beta$. Please demonstrate this (hint: use $b=\sum k_i Y_i$ to show this is the case).
+
+# Part I: Estimation in R {background-color="white" style="color: black;"}
 
 ## The Data Generating Process (DGP)
 
@@ -104,6 +128,7 @@ summary(fit)
 
 . . .
 
+## Estimation with `lm()`
 **Key elements of the output:**
 
 | Element | Meaning |
@@ -115,7 +140,7 @@ summary(fit)
 
 ## Generating Predictions
 
-```{r}
+```{r, echo = TRUE}
 # Single
 predict(fit, newdata = data.frame(x = 1))
 # Multiple values
@@ -239,12 +264,147 @@ The F-statistic is a **ratio of two variances** — it follows the F-distributio
 
 <iframe src="https://azvoterproject.shinyapps.io/western24ft/" width="100%" height="800px" style="border: none;" allowfullscreen></iframe>
 
+
+## Multiple variables
+
+The OLS estimator is a point estimator. We predict a single point $\hat{y}_i$, given a predictor $x_i$. Let's consider the SRF with *multiple predictors*:
+
+$$
+Y_i - \underbrace{(a + b_1 X_1 + b_2 X_2)}_{\hat{Y}_{i}} = e_i
+$$
+
+We'll still find a line that minimizes $\sum e^2$
+
+
+- We can just use a little algebra to rewrite these equations. Let's simplify things by writing each term in "deviation" form.
+
+ * $y_i=Y_i-\bar{Y}$
+ * $x_{1i}=X_{1i}-\bar{X_1}$
+ * $x_{2i}=X_{2i}-\bar{X_2}$
+
+## Multiple variables
+
+Setting $\frac{\partial SSR}  {\partial b_1}$ to 0
+
+\begin{eqnarray*}
+0&=& -2 \sum (Y_i-a-b_1X_{1i}-b_2 X_{2i}) (X_{1i})     \nonumber \\
+b_1&=&  \frac{\sum x_{1i} y_i-b_2\sum x_{1i} x_{2i}}{\sum x_{1i}^2} \nonumber \\
+\end{eqnarray*}
+
+ Setting $\frac{\partial SSR}  {\partial b_2}$ to 0
+\begin{eqnarray*}
+0&=& -2 \sum (Y_i-a-b_1X_{1i}-b_2 X_{2i}) (X_{2i})     \nonumber \\
+b_2&=&  \frac{\sum x_{2i} y_i-b_1\sum x_{1i} x_{2i}}{\sum x_{2i}^2} \nonumber \\
+\end{eqnarray*}
+
+## Multiple variables
+
+Then,
+
+\begin{eqnarray*}
+b_1&=&  \frac{\sum y_i x_{1i} \sum x_{2i}^2 - \sum x_{1i} x_{2i} \sum x_{2i} y_i  }{\sum x_{1i}^2 \sum x_{2i}^2 -(\sum x_{1i} x_{2i})^2} \nonumber \\
+b_2&=&  \frac{\sum y_i x_{2i} \sum x_{1i}^2 - \sum x_{1i} x_{2i} \sum x_{1i} y_i }{\sum x_{1i}^2 \sum x_{2i}^2 -(\sum x_{1i} x_{2i})^2}
+\nonumber \\
+\end{eqnarray*}
+
+## Multiple variables
+
+```{r}
+#| echo: false
+#| output: false
+library(plotly)
+set.seed(42)
+
+n <- 500
+x1 <- rnorm(n, 3, 2)
+x2 <- rnorm(n, 1, 2)
+y <- 1 + 0.75 * x1 - 0.50 * x2 + rnorm(n, 0, 1.5)
+
+dat <- data.frame(x1, x2, y)
+fit <- lm(y ~ x1 + x2, data = dat)
+dat$yhat <- fitted(fit)
+```
+
+$\hat{Y} = a + b_1 X_1 + b_2 X_2$
+
+- $a$ = `r round(coef(fit)[1], 3)`
+- $b_1$ = `r round(coef(fit)[2], 3)`
+- $b_2$ = `r round(coef(fit)[3], 3)`
+
+$R^2$ = `r round(summary(fit)$r.squared, 3)`
+
+## Multiple Regression: Fitted Plane & Residuals
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 7
+# Build plane surface
+grd_x1 <- seq(min(x1), max(x1), length.out = 25)
+grd_x2 <- seq(min(x2), max(x2), length.out = 25)
+grd <- expand.grid(x1 = grd_x1, x2 = grd_x2)
+grd$y <- predict(fit, newdata = grd)
+z_mat <- matrix(grd$y, nrow = 25, ncol = 25)
+
+# Residual segments: vertical lines from each point to the plane
+seg <- do.call(rbind, lapply(1:n, function(i) {
+  data.frame(
+    sx1 = c(dat$x1[i], dat$x1[i], NA),
+    sx2 = c(dat$x2[i], dat$x2[i], NA),
+    sz  = c(dat$y[i],  dat$yhat[i], NA)
+  )
+}))
+
+p <- plot_ly()
+p <- add_surface(p, x = grd_x2, y = grd_x1, z = z_mat,
+                 colorscale = list(c(0, "#2c7fb8"), c(1, "blue")),
+                 opacity = 0.35, showscale = FALSE, name = "Regression Plane")
+p <- add_markers(p, x = dat$x2, y = dat$x1, z = dat$y,
+                 marker = list(size = 3, color = "black", opacity = 0.6),
+                 name = "Observations")
+p <- add_trace(p, x = seg$sx2, y = seg$sx1, z = seg$sz,
+               type = "scatter3d", mode = "lines",
+               line = list(color = "#d62728", width = 2),
+               opacity = 0.4, name = "Residuals")
+p <- layout(p,
+  scene = list(
+    xaxis = list(title = "X2"),
+    yaxis = list(title = "X1"),
+    zaxis = list(title = "Y"),
+    camera = list(eye = list(x = 1.8, y = -1.5, z = 0.8))
+  ),
+  margin = list(l = 0, r = 0, b = 0, t = 0),
+  title = ""
+)
+
+# Auto-rotate the 3D plot
+p <- htmlwidgets::onRender(p, "
+  function(el, x) {
+    var angle = 0;
+    var radius = 2.2;
+    var zHeight = 0.8;
+    function rotate() {
+      angle += 0.002;
+      var eye = {
+        x: radius * Math.cos(angle),
+        y: radius * Math.sin(angle),
+        z: zHeight
+      };
+      Plotly.relayout(el.id, {'scene.camera.eye': eye});
+      requestAnimationFrame(rotate);
+    }
+    rotate();
+  }
+")
+p
+```
+
 # Part III: Matrix Algebra {background-color="white" style="color: black;"}
 
 Vectors, Matrices, and the OLS Estimator
 
 ## Why Matrix Algebra?
-
+- Writing the SRF in matrix form makes it easier to solve
 - Quantitative social science aims to quantify relationships between **multiple variables**
 - Data is *tabular*: rows = observations, columns = variables
 - We need tools to solve systems of equations efficiently
@@ -274,6 +434,15 @@ a_{n1} & a_{n2} & a_{n3}
 - First subscript = row, second = column
 - Notation: $\mathbf{A}_{n \times 3}$
 
+```{r, echo = TRUE}
+A <- matrix(c(1, 0, 3,
+              0, 1, 5,
+              1, 1, 4), nrow = 3, byrow = TRUE)
+colnames(A) <- c("Vote", "PID", "Ideology")
+A
+dim(A)
+```
+
 ## Vectors: The Building Blocks
 
 - **Scalar**: a single number (magnitude only)
@@ -289,6 +458,11 @@ $$\text{Distance}(\mathbf{a},\mathbf{b}) = \sqrt{(x_1-x_2)^2+(y_1-y_2)^2}$$
 
 This is just the Pythagorean theorem!
 
+```{r, echo = TRUE}
+a <- c(3, 2); b <- c(1, 1)
+sqrt(sum((a - b)^2))  # Euclidean distance
+```
+
 ## The Norm of a Vector
 
 The **norm** measures the length (magnitude) of a vector from the origin:
@@ -297,6 +471,12 @@ $$\|\mathbf{a}\| = \sqrt{x_1^2 + y_1^2}$$
 
 - Dividing a vector by its norm gives a **unit vector** (length = 1)
 - Useful for standardization
+
+```{r, echo = TRUE}
+a <- c(3, 2, 1)
+sqrt(sum(a^2))       # norm of a
+a / sqrt(sum(a^2))   # unit vector
+```
 
 . . .
 
@@ -323,6 +503,12 @@ $$\mathbf{a} - \mathbf{b} = [3-1,\; 2-1,\; 1-1] = [2, 1, 0]$$
 | Distributive | $c(\mathbf{a}+\mathbf{b})=c\mathbf{a}+c\mathbf{b}$ |
 | Zero | $\mathbf{a}+0=\mathbf{a}$ |
 
+```{r, echo = TRUE}
+a <- c(3, 2, 1); b <- c(1, 1, 1)
+a + b    # addition
+a - b    # subtraction
+```
+
 ## Vector Multiplication
 
 - **Inner (dot) product** → produces a *scalar* (measures similarity / covariance)
@@ -336,6 +522,12 @@ Multiply corresponding elements and sum:
 $$\mathbf{a} \cdot \mathbf{b} = \sum_i a_i b_i$$
 
 For $\mathbf{a}=[3,2,1]$ and $\mathbf{b}=[1,1,1]$: $\;\; 3(1)+2(1)+1(1) = 6$
+
+```{r, echo = TRUE}
+a <- c(3, 2, 1); b <- c(1, 1, 1)
+sum(a * b)          # inner product
+a %*% b             # same thing with matrix notation
+```
 
 . . .
 
@@ -376,6 +568,11 @@ $$\begin{bmatrix} 3 \\ 2 \\ 1 \end{bmatrix} \begin{bmatrix} 1 & 4 & 7 \end{bmatr
 - Input: two vectors of length $k$
 - Output: a $k \times k$ matrix
 
+```{r, echo = TRUE}
+a <- c(3, 2, 1); b <- c(1, 4, 7)
+a %o% b   # outer product
+```
+
 ## Matrices
 
 A matrix combines row or column vectors. Notation: **bold uppercase** ($\mathbf{A}$).
@@ -415,6 +612,12 @@ Multiply $i$-th row by $j$-th column:
 
 $$\begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix} \begin{bmatrix} 3 & 5 \\ 2 & 4 \end{bmatrix} = \begin{bmatrix} 1(3)+3(2) & 1(5)+3(4) \\ 2(3)+4(2) & 2(5)+4(4) \end{bmatrix} = \begin{bmatrix} 9 & 17 \\ 14 & 26 \end{bmatrix}$$
 
+```{r, echo = TRUE}
+A <- matrix(c(1,3,2,4), nrow=2, byrow=TRUE)
+B <- matrix(c(3,5,2,4), nrow=2, byrow=TRUE)
+A %*% B
+```
+
 . . .
 
 **Conformability rule:** columns of first = rows of second
@@ -429,6 +632,12 @@ Inner dimensions must match; result has outer dimensions.
 $\mathbf{A}^T$ swaps rows and columns. If $\mathbf{A}$ is $m \times n$, then $\mathbf{A}^T$ is $n \times m$.
 
 $$\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix}^T = \begin{bmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{bmatrix}$$
+
+```{r, echo = TRUE}
+A <- matrix(c(1,2,3,4,5,6), nrow=2, byrow=TRUE)
+t(A)         # transpose
+t(A) %*% A   # A'A is always square & symmetric
+```
 
 . . .
 
@@ -476,6 +685,13 @@ $$\det\begin{bmatrix} 4 & 7 \\ 2 & 6 \end{bmatrix} = 4(6) - 7(2) = 10 \neq 0 \;\
 
 $$\det\begin{bmatrix} 2 & 4 \\ 1 & 2 \end{bmatrix} = 2(2) - 4(1) = 0 \;\; \text{(singular — row 1 = 2 × row 2)}$$
 
+```{r, echo = TRUE}
+A <- matrix(c(4,7,2,6), nrow=2, byrow=TRUE)
+det(A)   # nonsingular
+B <- matrix(c(2,4,1,2), nrow=2, byrow=TRUE)
+det(B)   # singular — no inverse
+```
+
 . . .
 
 **For OLS:** $\det(\mathbf{X}^T\mathbf{X}) = 0$ means perfect multicollinearity — the columns of $\mathbf{X}$ are linearly dependent, and we cannot solve for $\mathbf{b}$.
@@ -504,6 +720,12 @@ $$\mathbf{A} = \begin{bmatrix} a & b \\ c & d \end{bmatrix} \quad \Longrightarro
 $$\begin{bmatrix} 4 & 7 \\ 2 & 6 \end{bmatrix}^{-1} = \frac{1}{10}\begin{bmatrix} 6 & -7 \\ -2 & 4 \end{bmatrix} = \begin{bmatrix} 0.6 & -0.7 \\ -0.2 & 0.4 \end{bmatrix}$$
 
 $$\mathbf{A}\mathbf{A}^{-1} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} = \mathbf{I} \;\; ✓$$
+
+```{r, echo = TRUE}
+A <- matrix(c(4,7,2,6), nrow=2, byrow=TRUE)
+solve(A)          # inverse
+A %*% solve(A)    # verify: should be identity
+```
 
 ## Properties of the Inverse
 
@@ -538,7 +760,7 @@ $$\mathbf{X} = \begin{bmatrix} 1 & X_{11} & \cdots & X_{1k} \\ 1 & X_{21} & \cdo
 
 ## Deriving the OLS Estimator
 
-**Goal:** Minimize the sum of squared errors:
+**Same Objective:** Minimize the sum of squared errors:
 
 $$\min_{\mathbf{b}}\; \mathbf{e}^T\mathbf{e} = (\mathbf{y} - \mathbf{Xb})^T(\mathbf{y} - \mathbf{Xb})$$
 
@@ -570,6 +792,54 @@ $$\boxed{\mathbf{b} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}}$$
 
 This requires $\mathbf{X}^T\mathbf{X}$ to be invertible — fails under **perfect multicollinearity**.
 
+```{r, echo = TRUE}
+x <- c(1, 2, 3, 4, 5)
+y <- c(5.1, 7.9, 11.2, 13.8, 17.1)
+X <- cbind(1, x)    
+b <- solve(t(X) %*% X) %*% t(X) %*% y
+b                    # OLS 
+coef(lm(y ~ x))     # verify with lm()
+```
+
+
+## An Example: Electoral Contestation
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, cache = TRUE}
+library(dplyr)
+library(tidyr)
+
+download.file("https://raw.githubusercontent.com/crweber9874/advancedRegression/main/data/wss20.rda",
+              destfile = "wss20.rda")
+## Load into session
+load("wss20.rda")
+
+wss20 = wss20 |>
+  pivot_wider(
+    names_from = contestation,
+    values_from = contestation_value
+  ) |>
+  mutate(
+    electoral_contestation = 
+      rowMeans(pick(criticize_election, attend_march, court, recount, burn_flag), na.rm = TRUE),
+    republican = ifelse(party_identification3 == 1, 1, 0),
+    democrat = ifelse(party_identification3 == 3, 1, 0),
+    independent = ifelse(party_identification3 == 2, 1, 0)
+  )
+
+```
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+## Solution with LM
+lm(electoral_contestation ~ college, data = wss20) |>
+ coef()
+
+# Solution with matrix algebra
+X = cbind(1, wss20$college)
+y = wss20$electoral_contestation
+
+b = solve(t(X) %*% X) %*% t(X) %*% y
+b
+```
 ## Summary
 
 1. **Vectors** encode magnitude and direction; the **inner product** measures covariance
